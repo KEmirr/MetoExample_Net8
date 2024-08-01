@@ -1,0 +1,6 @@
+@MetoFirstExample_v4_HostAddress = http://localhost:5078
+
+GET {{MetoFirstExample_v4_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
