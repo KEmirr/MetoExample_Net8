@@ -199,7 +199,7 @@ namespace MetoProject_Forms
                     string responseBody = await response.Content.ReadAsStringAsync();
                     memoEditLogs.Invoke(new Action(() =>
                     {
-                        memoEditLogs.AppendText($"Request error: {{response.StatusCode}}\n Response:{{responseBody}}\n");
+                        memoEditLogs.AppendText($"Request error: {{response.StatusCode}} \n Response:{{responseBody}}\n");
                     }));
                 }
 
@@ -249,7 +249,7 @@ namespace MetoProject_Forms
             }
             catch (HttpRequestException ex)
             {
-                memoEditLogs.AppendText($"Request error: {ex.Message}\n");
+                memoEditLogs.AppendText($"Request error PCLCon: {ex.Message}\n");
                 return false;
 
             }
