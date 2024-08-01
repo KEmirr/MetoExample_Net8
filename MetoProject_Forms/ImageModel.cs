@@ -9,6 +9,7 @@ namespace MetoFirstExample_v4_WinFormMain
     public class ImageModel
     {
         //Kullanılmaycak
+        //Image Model sınıfı API tarafına aktarıldı
         public string ImagePath { get; set; }
         public byte[] ImageData { get; set; }
         public DateTime CreatedAt { get; set; }
