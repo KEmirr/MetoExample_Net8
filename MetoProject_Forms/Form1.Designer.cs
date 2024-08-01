@@ -39,7 +39,7 @@
             // memoEditLogs
             // 
             memoEditLogs.Dock = System.Windows.Forms.DockStyle.Right;
-            memoEditLogs.Location = new System.Drawing.Point(244, 0);
+            memoEditLogs.Location = new System.Drawing.Point(320, 0);
             memoEditLogs.Name = "memoEditLogs";
             memoEditLogs.Size = new System.Drawing.Size(378, 533);
             memoEditLogs.TabIndex = 0;
@@ -73,7 +73,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(622, 533);
+            ClientSize = new System.Drawing.Size(698, 533);
             Controls.Add(textEdit_Counter);
             Controls.Add(button_fileOff);
             Controls.Add(button_fileOn);
