@@ -8,6 +8,7 @@ namespace MetoFirstExample_v4_WinFormMain
 {
     public class ImageModel
     {
+        //Hande KARA    
         //Ercan Ervan
         //Image Model sınıfı API tarafına aktarıldı
         public string ImagePath { get; set; }
