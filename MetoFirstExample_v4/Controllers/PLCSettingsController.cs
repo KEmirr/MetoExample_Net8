@@ -11,14 +11,14 @@ namespace MetoFirstExample_v4_WepAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-
+    //plc yapılanması kontrol edilecektir. 
     public class PLCSettingsController : ControllerBase
     {
         private readonly DatabaseHelper _databaseHelper;
         private readonly PLCHelper _plcHelper;
         public PLCSettingsController(DatabaseHelper databaseHelper)
         {
-            _databaseHelper = databaseHelper;
+            _databaseHelper = databaseHelper; 
         }
         public PLCSettingsController(PLCHelper plcHelper)
         {
