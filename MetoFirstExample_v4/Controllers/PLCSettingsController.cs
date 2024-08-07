@@ -25,32 +25,36 @@ namespace MetoFirstExample_v4_WepAPI.Controllers
             _plcHelper = plcHelper;
         }
         [HttpGet("check-connection")]
-        public async Task<IActionResult> CheckPLCConncetion()
+        public async Task<IActionResult> CheckPLCConnection()
         {
             try
             {
                 var settings = await _databaseHelper.GetPLCSettingAsync();
                 string ipAddress = settings["plcIP"];
-                int port=int.Parse(settings["port"]);
+                if (!int.TryParse(settings["port"], out int port))
+                {
+                    await LogErrorAsync("Invalid port number.");
+                    return StatusCode(400, "Invalid port number.");
+                }
 
-                bool isConncetion=await CheckConnectionAsync(ipAddress, port);
-                if (isConncetion)
+                bool isConnection = await CheckConnectionAsync(ipAddress, port);
+                if (isConnection)
                 {
                     return Ok("PLC bağlantısı Başarılı \n");
                 }
-                else 
+                else
                 {
-                    await LogErrorAsync("PLC Bağlantısı Başarısız ConToPLC \n");
-                    return StatusCode(500, "PLC Connection Failed ConToPLC  \n");
+                    await LogErrorAsync("PLC Bağlantısı Başarısız ConToPLC-1 \n");
+                    return StatusCode(501, "PLC Connection Failed ConToPLC-2 \n");
                 }
             }
             catch (Exception ex)
             {
-                await LogErrorAsync($"Error in Checking PLC Conncetion... Looking Please Ethernet Cable or PLC IP Address Checking {ex.Message}");
-                return StatusCode(500, $"Internal server error PLC Conncetion {ex.Message}");
+                await LogErrorAsync($"Error in Checking PLC Connection: {ex.Message}");
+                return StatusCode(500, $"Internal server error PLC Connection: {ex.Message}");
             }
-
         }
+        
         [HttpPost("write")]
         public async Task<IActionResult> WriteToPlc()
         {
@@ -69,22 +73,19 @@ namespace MetoFirstExample_v4_WepAPI.Controllers
                         int.Parse(settings["plc_FotoKaydet"]),
                         int.Parse(settings["plc_sayac"])
                     );
-
                     ushort value = await plcHelper.ReadSingleRegisterAsync();
                     return Ok(value);
                 }
                 else
                 {
                     await LogErrorAsync("PLC Bağlantısı Başarısız WriteToPLC \n");
-                    return StatusCode(500, "PLC Connection Başarısız WriteToPLC \n");
-
+                    return StatusCode(503, "PLC Connection Başarısız WriteToPLC \n");
                 }
-                
             }
             catch (Exception ex)
             {
                 await LogErrorAsync($"Error in Checking WriteToPLC... Looking Please Ethernet Cable or PLC IP Address Checking {ex.Message}");
-                return StatusCode(500, $"Internel server Error WriteToPLC: {ex.Message}");
+                return StatusCode(504, $"Internel server Error WriteToPLC: {ex.Message}");
             }
             
          }
@@ -113,14 +114,14 @@ namespace MetoFirstExample_v4_WepAPI.Controllers
                 else
                 {
                     await LogErrorAsync("PLC Bağlantısı Başarısız ReadFromPLC \n.");
-                    return StatusCode(500, "PLC Connection Başarısız ReadFromPLC \n");
+                    return StatusCode(505, "PLC Connection Başarısız ReadFromPLC \n");
                 }
 
             }
             catch (Exception ex)
             {
                 await LogErrorAsync($"Error in Checking ReadFromPLC... Looking Please Ethernet Cable or PLC IP Address Checking{ex.Message} \n");
-                return StatusCode(500, $"Internel server Error ReadFromPLC: {ex.Message}");
+                return StatusCode(506, $"Internel server Error ReadFromPLC: {ex.Message}");
 
             }
         }
@@ -134,12 +135,22 @@ namespace MetoFirstExample_v4_WepAPI.Controllers
                     return client.Connected;
                 }
             }
-            catch 
+            catch (SocketException ex)
             {
+                await LogErrorAsync($"SocketException: {ex.Message}");
                 return false;
-                
+            }
+            catch (Exception ex)
+            {
+                await LogErrorAsync($"Exception: {ex.Message}");
+                return false;
             }
         }
+        public interface IDatabaseHelper
+        {
+            Task<Dictionary<string, string>> GetPLCSettingAsync();
+        }
+
         private async Task LogErrorAsync(string message) 
         {
             var parametres = new SqlParameter[]
