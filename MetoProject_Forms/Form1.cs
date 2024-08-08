@@ -136,7 +136,7 @@ namespace MetoProject_Forms
 
             try
             {
-                HttpResponseMessage response = await client.PostAsync("http://localhost:9191/api/image", content);
+                HttpResponseMessage response = await client.PostAsync("http://localhost:9192/api/image", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -185,7 +185,7 @@ namespace MetoProject_Forms
 
             try
             {
-                HttpResponseMessage response = await client.PostAsync("http://localhost:9191/api/log", content);
+                HttpResponseMessage response = await client.PostAsync("http://localhost:9192/api/log", content);
                 if (response.IsSuccessStatusCode)
                 {
                     memoEditLogs.Invoke(new Action(() =>
@@ -221,7 +221,7 @@ namespace MetoProject_Forms
 
         private async Task InitializePLCHelper()
         {
-            var response = await client.GetAsync("http://localhost:9191/api/PLCSettings");
+            var response = await client.GetAsync("http://localhost:9192/api/PLCSettings");
             response.EnsureSuccessStatusCode();
             var responseBody = await response.Content.ReadAsStringAsync();
             var settings = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody);
@@ -240,7 +240,7 @@ namespace MetoProject_Forms
         {
             try
             {
-                HttpResponseMessage Response = await client.GetAsync("http://localhost:9191/api/plc/check-connection");
+                HttpResponseMessage Response = await client.GetAsync("http://localhost:9192/api/plc/check-connection");
                 Response.EnsureSuccessStatusCode();
                 string responseBody = await Response.Content.ReadAsStringAsync();
                 memoEditLogs.AppendText($"Request Error PLCConnection:{responseBody} \n");
@@ -259,7 +259,7 @@ namespace MetoProject_Forms
         {
             try
             {
-                HttpResponseMessage Response = await client.GetAsync("http://localhost:9191/api/plc/write");
+                HttpResponseMessage Response = await client.GetAsync("http://localhost:9192/api/plc/write");
                 Response.EnsureSuccessStatusCode();
                 string responseBody = await Response.Content.ReadAsStringAsync();
                 memoEditLogs.AppendText($"Write To PLC: {responseBody} \n");
@@ -276,7 +276,7 @@ namespace MetoProject_Forms
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync("http://localhost:9191/api/plc/read");
+                HttpResponseMessage response = await client.GetAsync("http://localhost:9192/api/plc/read");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 memoEditLogs.AppendText($"Read from PLC: {responseBody} \n");
