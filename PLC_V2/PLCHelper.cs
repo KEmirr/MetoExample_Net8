@@ -17,6 +17,7 @@ namespace PLC_V2
             _writeRegisterAddress = writeRegisterAddress;
             _readRegisterAddress = readRegisterAddress;
         }
+
         public async Task WriteToPlcAsync()
         {
             try
