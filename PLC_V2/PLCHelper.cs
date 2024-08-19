@@ -1,5 +1,6 @@
 ﻿using NModbus;
 using System.Net.Sockets;
+using Microsoft.Extensions.Configuration;
 
 namespace PLC_V2
 {
@@ -10,13 +11,14 @@ namespace PLC_V2
         private readonly int _writeRegisterAddress;
         private readonly int _readRegisterAddress;
 
-        public PLCHelper(string ipAddress, int port, int writeRegisterAddress, int readRegisterAddress)
+        public PLCHelper(IConfiguration configuration)
         {
-            _ipAddress = ipAddress;
-            _port = port;
-            _writeRegisterAddress = writeRegisterAddress;
-            _readRegisterAddress = readRegisterAddress;
+            _ipAddress = configuration["PLCSettings:IpAddress"];
+            _port = int.Parse(configuration["PLCSettings:Port"]);
+            _writeRegisterAddress = int.Parse(configuration["PLCSettings:WriteRegisterAddress"]);
+            _readRegisterAddress = int.Parse(configuration["PLCSettings:ReadRegisterAddress"]);
         }
+
         public async Task WriteToPlcAsync()
         {
             try
@@ -30,13 +32,12 @@ namespace PLC_V2
                     await master.WriteSingleRegisterAsync(0, (ushort)_writeRegisterAddress, valueToWrite);
                 }
             }
-
             catch (Exception ex)
             {
-
                 throw new InvalidOperationException($"PLC'ye yazma hatası: {ex.Message}");
             }
         }
+
         public async Task<ushort> ReadSingleRegisterAsync()
         {
             try
@@ -51,7 +52,6 @@ namespace PLC_V2
             }
             catch (Exception ex)
             {
-
                 throw new InvalidOperationException($"PLC'den okuma hatası: {ex.Message}");
             }
         }
