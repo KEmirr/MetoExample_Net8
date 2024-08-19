@@ -9,10 +9,11 @@ namespace PLC_V2
     public class DatabaseHelper
     {
         private readonly string _connectionString;
+        private readonly IConfiguration _configuration;
 
-        public DatabaseHelper (string connectionString)
+        public DatabaseHelper(IConfiguration configuration)
         {
-            _connectionString=connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
         public async Task ExecuteStoredProcedureAsync(string procedureName, SqlParameter[] parameters)
         {
