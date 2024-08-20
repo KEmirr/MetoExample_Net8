@@ -41,6 +41,8 @@ public class ModbusTCPConnectionFactory
         return false;
     }
 
+    //Conncetion yapıldığında 1 numaralı adresi aktif ederek bağlantı sağlandığı kontrol ediyor
+
     public async Task WriteSingleCoilAsync(ushort coilAddress, bool value)
     {
         if (_tcpClient == null || !_tcpClient.Connected)

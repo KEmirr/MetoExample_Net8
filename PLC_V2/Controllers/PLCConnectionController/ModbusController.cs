@@ -14,7 +14,7 @@ namespace PLC_V2.Controllers.PLCConnection
             _modbusConnectionFactory = modbusConnectionFactory;
         }
 
-        [HttpPost("write-coil")]
+        [HttpPost("connection-check")]
         public async Task<IActionResult> WriteConnectionCoil([FromBody] WriteCoilRequest request)
         {
             await _modbusConnectionFactory.WriteSingleCoilAsync(request.CoilAddress, request.Value);

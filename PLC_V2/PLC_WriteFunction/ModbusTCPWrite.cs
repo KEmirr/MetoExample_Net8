@@ -1,23 +1,19 @@
-﻿using System;
-using System.Threading.Tasks;
-using NModbus;
+﻿using NModbus;
 using System.Net.Sockets;
 
-namespace PLC_V2.PLC_ReadFunction
+namespace PLC_V2.PLC_WriteFunction
 {
-    public class ModbusTCPRead
+    public class ModbusTCPWrite
     {
         private readonly string _ipAddress;
         private readonly int _port;
         private TcpClient _tcpClient;
         private IModbusMaster _modbusMaster;
         private readonly int _reconnectInterval;
-      
-
-
-        public ModbusTCPRead(string ipAddress, int port, int reconnectInterval)
+        
+        public ModbusTCPWrite (string ipaddtess, int port, int reconnectInterval)
         {
-            _ipAddress = ipAddress;
+            _ipAddress = ipaddtess;
             _port = port;
             _reconnectInterval = reconnectInterval;
         }
@@ -44,12 +40,12 @@ namespace PLC_V2.PLC_ReadFunction
 
             return false;
         }
-        public async Task<bool[]> ReadCoilAsync(ushort startAddress,ushort numberOfPoints)
+        public async Task<bool> WriteCoilAsync(ushort startAddress, bool coilStatus)
         {
             const int maxRetryAttempts = 3;
             const int delayBetweenRetries = 1000; // milliseconds
             int attempt = 0;
-            while (true) 
+            while (true)
             {
                 try
                 {
@@ -61,7 +57,8 @@ namespace PLC_V2.PLC_ReadFunction
 
                     if (_tcpClient != null && _tcpClient.Connected)
                     {
-                        return _modbusMaster.ReadCoils(1, startAddress, numberOfPoints);
+                        await _modbusMaster.WriteSingleCoilAsync(1, startAddress, coilStatus);
+                        return true;
                     }
                 }
                 catch (Exception ex)
@@ -74,11 +71,9 @@ namespace PLC_V2.PLC_ReadFunction
 
                 }
             }
-
-            return null;
-
+            return false;
         }
-        public async Task<ushort[]> ReadHoldingRegistersAsync(ushort startAddress, ushort numberOfPoints)
+        public async Task<bool> WriteRegisterAsync(ushort startAddress, ushort numberOfPoints)
         {
             const int maxRetryAttempts = 3;
             const int delayBetweenRetries = 1000; // milliseconds
@@ -95,7 +90,8 @@ namespace PLC_V2.PLC_ReadFunction
 
                     if (_tcpClient != null && _tcpClient.Connected)
                     {
-                        return _modbusMaster.ReadHoldingRegisters(1, startAddress, numberOfPoints);
+                       await _modbusMaster.WriteSingleRegisterAsync(1, startAddress, numberOfPoints);
+                        return true;
                     }
                 }
                 catch (SocketException ex)
@@ -107,17 +103,7 @@ namespace PLC_V2.PLC_ReadFunction
                     await Task.Delay(delayBetweenRetries);
                 }
             }
-            return null; // Eğer tüm denemeler başarısız olursa null döndür
+            return false; // Eğer tüm denemeler başarısız olursa null döndür
         }
-        public void Disconnect()
-        {
-            if (_tcpClient != null)
-            {
-                _tcpClient.Close();
-                _tcpClient = null;
-                Console.WriteLine("Disconnected from PLC.");
-            }
-        }
-
     }
 }

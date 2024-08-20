@@ -1,43 +1,11 @@
-
-//namespace PLC_V2
-//{
-//    public class Program
-//    {
-//        public static void Main(string[] args)
-//        {
-//            var builder = WebApplication.CreateBuilder(args);
-
-//            // Add services to the container.
-
-//            builder.Services.AddControllers();
-//            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//            builder.Services.AddEndpointsApiExplorer();
-//            builder.Services.AddSwaggerGen();
-//            builder.Services.AddScoped<DatabaseHelper>();
-//            builder.Services.AddScoped<PLCHelper>();
-//            var app = builder.Build();
-
-//            // Configure the HTTP request pipeline.
-//            if (app.Environment.IsDevelopment())
-//            {
-//                app.UseSwagger();
-//                app.UseSwaggerUI();
-//            }
-
-//            app.UseAuthorization();
-
-
-//            app.MapControllers();
-
-//            app.Run();
-//        }
-//    }
-//}
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PLC_V2.PLC_ReadFunction;
+using PLC_V2.Model;
+using System.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,8 +32,22 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add the ModbusTCPReadConnectionFactory as a singleton service
-builder.Services.AddSingleton(new ModbusTCPRead("19.0.0.51", 502, 5000));
+// Configure the PLCSettings section from appsettings.json
+builder.Services.Configure<PLCSettings>(builder.Configuration.GetSection("PLCSettings"));
+
+// Add the ModbusTCPConnectionFactory as a singleton service using the configuration values
+builder.Services.AddSingleton<ModbusTCPConnectionFactory>(sp =>
+{
+    var config = sp.GetRequiredService<IOptions<PLCSettings>>().Value;
+    return new ModbusTCPConnectionFactory(config.IpAddress, config.Port, config.ReconnectInterval);
+});
+
+// Add the ModbusTCPRead as a singleton service using the same configuration values
+builder.Services.AddSingleton<ModbusTCPRead>(sp =>
+{
+    var config = sp.GetRequiredService<IOptions<PLCSettings>>().Value;
+    return new ModbusTCPRead(config.IpAddress, config.Port, config.ReconnectInterval);
+});
 
 var app = builder.Build();
 
