@@ -17,14 +17,14 @@ namespace PLC_V2.Controllers.PLCReadController
             _modbusTCPRead = modbusTCPRead;
         }
         [HttpGet("read-coils")]
-        public async Task<IActionResult> ReadCoils([FromBody] ushort startAddress, [FromBody] ushort numberOfPoints)
+        public async Task<IActionResult> ReadCoils([FromQuery] ushort startAddress, [FromQuery] ushort numberOfPoints)
         {
             var result = await _modbusTCPRead.ReadCoilAsync(startAddress, numberOfPoints);
             return Ok(result);
         }
 
         [HttpGet("read-registers")]
-        public async Task<IActionResult> ReadRegister([FromBody] ushort startAddress, [FromBody] ushort numberOfPoints)
+        public async Task<IActionResult> ReadRegister([FromQuery] ushort startAddress, [FromQuery] ushort numberOfPoints)
         {
             var result = await _modbusTCPRead.ReadHoldingRegistersAsync(startAddress, numberOfPoints);
             return Ok(result);
