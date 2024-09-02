@@ -11,6 +11,5 @@ namespace PLC_V2.Controllers.PLCWriteController
         {
             this.modbusTCPWrite = modbusTCPWrite;
         }
-
     }
 }
